@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  name          String?
+  pass          String    @default("@")
+  cel           String?
+  role          String    @default("client")
+  payments      Boolean   @default(false)
+  creadoEn      DateTime  @default(now())
+  actualizadoEn DateTime  @updatedAt
+  empresas      empresa[]
+  add           String    @default("")
+}
+
+model empresa {
+  id            Int        @id @default(autoincrement())
+  slug          String     @unique
+  nombre        String
+  slogan        String?
+  info          String?
+  location      String?
+  whatsapp      String?
+  instagram     String?
+  facebook      String?
+  maps          String?
+  img           String     @default("https://via.placeholder.com/800x250")
+  horarios      String     @default("{\"0\":{\"isOpen\":false,\"isDos\":false,\"h1\":{\"inicio\":\"08:00\",\"fin\":\"12:00\"},\"h2\":{\"inicio\":\"15:00\",\"fin\":\"20:00\"}},\"1\":{\"isOpen\":true,\"isDos\":false,\"h1\":{\"inicio\":\"08:00\",\"fin\":\"12:00\"},\"h2\":{\"inicio\":\"15:00\",\"fin\":\"20:00\"}},\"2\":{\"isOpen\":true,\"isDos\":false,\"h1\":{\"inicio\":\"08:00\",\"fin\":\"12:00\"},\"h2\":{\"inicio\":\"15:00\",\"fin\":\"20:00\"}},\"3\":{\"isOpen\":true,\"isDos\":false,\"h1\":{\"inicio\":\"08:00\",\"fin\":\"12:00\"},\"h2\":{\"inicio\":\"15:00\",\"fin\":\"20:00\"}},\"4\":{\"isOpen\":true,\"isDos\":false,\"h1\":{\"inicio\":\"08:00\",\"fin\":\"12:00\"},\"h2\":{\"inicio\":\"15:00\",\"fin\":\"20:00\"}},\"5\":{\"isOpen\":true,\"isDos\":false,\"h1\":{\"inicio\":\"08:00\",\"fin\":\"12:00\"},\"h2\":{\"inicio\":\"15:00\",\"fin\":\"20:00\"}},\"6\":{\"isOpen\":true,\"isDos\":false,\"h1\":{\"inicio\":\"08:00\",\"fin\":\"12:00\"},\"h2\":{\"inicio\":\"15:00\",\"fin\":\"20:00\"}}}")
+  ref           String     @unique @default(cuid())
+  userId        Int?
+  creadoEn      DateTime   @default(now())
+  actualizadoEn DateTime   @updatedAt
+  User          User?      @relation(fields: [userId], references: [id])
+  services      Services[]
+}
+
+model Services {
+  sref       String   @unique @default(cuid())
+  titulo     String
+  info       String?
+  alias      String?
+  img        String   @default("https://via.placeholder.com/200x100")
+  horarios   String?
+  id         Int      @id @default(autoincrement())
+  time       Int
+  timeC      Int
+  precio     Int      @default(0)
+  reserva    Int      @default(0)
+  pagos      Boolean  @default(false)
+  isHorarios Boolean  @default(false)
+  activo     Boolean  @default(true)
+  empresa    empresa? @relation(fields: [empresaId], references: [id])
+  empresaId  Int?
+}
